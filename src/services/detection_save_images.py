@@ -2,21 +2,12 @@
 Created By: ishwor subedi
 Date: 2024-03-08
 """
-from pathlib import Path
-
-from ultralytics import YOLO
 import cv2
+from pathlib import Path
+from ultralytics import YOLO
 
 
 def detection_save_img(data, det_model="yolo_auto_annotator/resources/yolov8x.pt", device="", output_dir=None):
-    """
-    This function takes in the path to a directory containing images and automatically annotates the images using the
-    :param data:  Path to the directory containing images
-    :param det_model:  Path to the detection model (cpu,cuda)
-    :param device:   Device to run the model on
-    :param output_dir:  Path to the directory to save the annotated labels
-    :return:
-    """
     vehicle_classes = [2, 3, 5, 7]
 
     det_model = YOLO(det_model)
@@ -45,10 +36,3 @@ def detection_save_img(data, det_model="yolo_auto_annotator/resources/yolov8x.pt
                 crop_img = image_array[int(y_min):int(y_max), int(x_min):int(x_max)]
                 cv2.imwrite(f"{Path(output_dir) / Path(result.path).stem}_{i}.jpg", crop_img)
                 print(f"{Path(output_dir) / Path(result.path).stem}_{i}.jpg")
-
-
-if __name__ == '__main__':
-    detection_save_img(data='/home/ishwor/Desktop/dataset/img/',
-                       det_model='services_trinetra/yolo_auto_annotator/resources/yolov8s.pt',
-                       output_dir='/home/ishwor/Desktop/dataset/vehicle_extracted/',
-                       device='cuda')

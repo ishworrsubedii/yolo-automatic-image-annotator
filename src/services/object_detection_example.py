@@ -3,14 +3,17 @@ Created By: ishwor subedi
 Date: 2024-02-21
 """
 
-import numpy as np
 import cv2
 from ultralytics import YOLO
 
-if __name__ == '__main__':
-    model_path = "services_trinetra/yolo_auto_annotator/resources/traffic_light.txt.pt"
-    image_path = "images/Screenshot from 2024-02-21 11-39-48.png"
 
+def detect_objects(model_path, image_path):
+    """
+    This function takes in the path to a directory containing images and automatically annotates the images using the
+    :param model_path: Path to the detection model (cpu,cuda)
+    :param image_path: Path to the directory containing images
+    :return:
+    """
     img = cv2.imread(image_path)
     obj = YOLO(model_path)
 
@@ -33,3 +36,5 @@ if __name__ == '__main__':
     cv2.imshow('Annotated Image', img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+

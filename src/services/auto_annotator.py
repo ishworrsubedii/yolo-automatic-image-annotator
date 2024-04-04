@@ -4,20 +4,11 @@ Date: 2024-02-06
 """
 import os
 from pathlib import Path
-
 from ultralytics import SAM, YOLO
 
 
-def auto_annotate(data, det_model="yolo_auto_annotator/resources/yolov8x.pt", device="", output_dir=None):
-    """
-    This function takes in the path to a directory containing images and automatically annotates the images using the
-    :param data:  Path to the directory containing images
-    :param det_model:  Path to the detection model (cpu,cuda)
-    :param device:   Device to run the model on
-    :param output_dir:  Path to the directory to save the annotated labels
-    :return:
-    """
-    vehicle_classes = [0, 1, 2, 3, 5, 7]
+def auto_annotate(data, det_model="resources/yolov8x.pt", device="", output_dir=None):
+    classes = [0, 1, 2, 3, 5, 7]
 
     det_model = YOLO(det_model)
 
@@ -30,7 +21,7 @@ def auto_annotate(data, det_model="yolo_auto_annotator/resources/yolov8x.pt", de
 
     for result in det_results:
         class_ids = result.boxes.cls.int().tolist()  # noqa
-        vehicle_detections = [i for i, cls_id in enumerate(class_ids) if cls_id in vehicle_classes]
+        vehicle_detections = [i for i, cls_id in enumerate(class_ids) if cls_id in classes]
 
         if len(vehicle_detections):
             boxes = result.boxes.xyxy
@@ -50,9 +41,3 @@ def auto_annotate(data, det_model="yolo_auto_annotator/resources/yolov8x.pt", de
                     print(f"{class_ids[i]} {center_x} {center_y} {width} {height}")
         else:
             os.remove(result.path)
-
-
-if __name__ == '__main__':
-    auto_annotate(data='/home/ishwor/Desktop/dataset/vehicle_extracted',
-                  det_model='backend_trinetra/services/alpr/resources/yolov8/nnpd.pt',
-                  output_dir='/home/ishwor/Desktop/dataset/labels/vehicle/', device='cuda')
